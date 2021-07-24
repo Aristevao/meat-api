@@ -6,7 +6,7 @@ class UsersRouter extends Router {
     applyRoutes(application: restify.Server) {
 
         application.get('/users', (req, resp, next) => {
-            User.findAll().then(users => {
+            User.find().then(users => {
                 resp.json(users)
                 return next()
             })
@@ -20,6 +20,16 @@ class UsersRouter extends Router {
                 }
                 
                 resp.send(404)
+                return next()
+            })
+        })
+
+        application.post('/users', (req, resp, next) => {
+            const user = new User(req.body)
+            user.save().then(user => {
+                user.password = undefined
+                resp.json(user)
+                return next()
             })
         })
     }

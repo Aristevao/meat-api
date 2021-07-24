@@ -23,6 +23,7 @@ export class Server {
                 })
 
                 this.application.use(restify.plugins.queryParser())
+                this.application.use(restify.plugins.bodyParser())
 
                 // ---- ROUTES ----
                 for (let router of routers) { // iterate router and execute applyRoutes in each element
@@ -41,7 +42,7 @@ export class Server {
         )
     }
 
-    bootstrap(routers: Router[] = []): any {
+    bootstrap(routers: Router[] = []): Promise<Server> {
         this.initializeDb().then(() => {
             return this.initRoutes(routers).then(() => this)
         })
