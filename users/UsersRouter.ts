@@ -14,11 +14,11 @@ class UsersRouter extends Router {
 
         application.get('/users/:id', (req, resp, next) => {
             User.findById(req.params.id).then(user => {
-                if(user) {
+                if (user) {
                     resp.json(user)
                     return next()
                 }
-                
+
                 resp.send(404)
                 return next()
             })
@@ -31,6 +31,20 @@ class UsersRouter extends Router {
                 resp.json(user)
                 return next()
             })
+        })
+
+        application.put('/users/:id', (req, resp, next) => {
+            const options = { overwrite: true } // overwrite all document data
+            User.update({ _id: req.params.id }, req.body, options)
+                .exec().then((result):any => {
+                    if (result.n) {
+                        return User.findById(req.params.id)
+                    }
+                    resp.send(404)
+                }).then(user => {
+                    resp.json(user)
+                    return next()
+                })
         })
     }
 }
